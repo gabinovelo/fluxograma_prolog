@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxograma</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --surface2:  #f9f9fb;
+    --divider:   #e5e5ea;
+    --text:      #1d1d1f;
+    --text2:     #6e6e73;
+    --text3:     #aeaeb2;
+    --accent:    #0071e3;
+    --accent-bg: #e8f1fb;
+    --green:     #34c759;
+    --green-bg:  #eaf7ee;
+    --red:       #ff3b30;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    --radius:    10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* TITLEBAR */
+  .titlebar {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--divider);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    position: sticky; top: 0; z-index: 100;
+    gap: 16px;
+  }
+  .window-dots { display: flex; gap: 6px; margin-right: 4px; flex-shrink: 0; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+  .app-title { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.1px; }
+  .nav-tabs {
+    display: flex; gap: 2px;
+    background: var(--bg);
+    border-radius: 8px; padding: 3px;
+    margin: 0 auto;
+  }
+  .tab {
+    padding: 5px 18px; border-radius: 6px; border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+  /* LAYOUT */
+  .content { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* PAGE HEADER */
+  .page-header { margin-bottom: 24px; }
+  .page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 3px; }
+  .page-sub { font-size: 13px; color: var(--text2); font-weight: 300; }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--divider);
+    overflow: hidden;
+  }
+
+  /* FORM */
+  .form-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.one { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--text2); }
+  input[type="text"], input[type="number"] {
+    background: var(--surface2); border: 1px solid var(--divider);
+    border-radius: 7px; padding: 8px 11px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%;
+  }
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+    background: #fff;
+  }
+  input::placeholder { color: var(--text3); }
+
+  .tags-wrap {
+    background: var(--surface2); border: 1px solid var(--divider);
+    border-radius: 7px; padding: 5px 8px;
+    display: flex; flex-wrap: wrap; gap: 5px;
+    align-items: center; min-height: 38px; cursor: text;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .tags-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+    background: #fff;
+  }
+  .tag {
+    background: var(--accent-bg); color: var(--accent);
+    font-family: 'DM Mono', monospace; font-size: 11.5px;
+    padding: 2px 8px; border-radius: 5px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .tag .x { cursor: pointer; opacity: 0.5; font-size: 13px; }
+  .tag .x:hover { opacity: 1; }
+  .tags-wrap input {
+    border: none; background: none; outline: none;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); padding: 2px 3px; min-width: 100px; flex: 1;
+    box-shadow: none;
+  }
+
+  .form-footer {
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-top: 1px solid var(--divider);
+    display: flex; justify-content: flex-end;
+  }
+  .btn {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    padding: 7px 18px; border-radius: 7px; border: none;
+    cursor: pointer; transition: all 0.15s; letter-spacing: -0.1px;
+  }
+  .btn-blue { background: var(--accent); color: #fff; }
+  .btn-blue:hover { background: #0077ed; box-shadow: 0 2px 8px rgba(0,113,227,0.3); }
+  .btn-blue:active { transform: scale(0.98); }
+  .btn-ghost { background: transparent; color: var(--text2); padding: 5px 10px; }
+  .btn-ghost:hover { color: var(--red); background: rgba(255,59,48,0.07); }
+
+  /* TABLE */
+  .table-header {
+    display: grid; grid-template-columns: 100px 1fr 70px 160px 40px; gap: 8px;
+    padding: 10px 18px; background: var(--surface2);
+    border-bottom: 1px solid var(--divider);
+    font-size: 11.5px; font-weight: 500; color: var(--text3);
+    letter-spacing: 0.3px; text-transform: uppercase;
+  }
+  .table-row {
+    display: grid; grid-template-columns: 100px 1fr 70px 160px 40px; gap: 8px;
+    padding: 11px 18px; border-bottom: 1px solid var(--divider);
+    align-items: center; transition: background 0.1s;
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-row:hover { background: var(--surface2); }
+  .mono { font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--accent); }
+  .sem-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface2); border: 1px solid var(--divider);
+    border-radius: 5px; font-size: 12px; color: var(--text2);
+    padding: 2px 9px; font-weight: 500;
+  }
+  .req-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .req-chip {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    background: var(--surface2); border: 1px solid var(--divider);
+    border-radius: 4px; color: var(--text2); padding: 1px 6px;
+  }
+  .empty { padding: 36px 20px; text-align: center; color: var(--text3); font-size: 13px; }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text2); }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* EDIT ROW */
+  .table-row.editing { background: #fffdf5; }
+  .row-edit-input {
+    background: var(--surface); border: 1px solid var(--accent);
+    border-radius: 5px; padding: 4px 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+    outline: none; width: 100%;
+    box-shadow: 0 0 0 2px rgba(0,113,227,0.1);
+  }
+  .row-actions { display: flex; gap: 4px; align-items: center; }
+  .btn-save {
+    background: var(--accent); color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    padding: 4px 10px; border-radius: 5px; border: none; cursor: pointer;
+  }
+  .btn-save:hover { background: #0077ed; }
+  .btn-cancel {
+    background: transparent; color: var(--text3);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    padding: 4px 8px; border-radius: 5px; border: none; cursor: pointer;
+  }
+  .btn-cancel:hover { color: var(--text2); background: var(--surface2); }
+  .btn-edit {
+    background: transparent; color: var(--text3);
+    font-size: 13px; padding: 5px 7px; border-radius: 5px; border: none; cursor: pointer;
+  }
+  .btn-edit:hover { color: var(--accent); background: var(--accent-bg); }
+  .actions-normal { display: flex; gap: 2px; }
+
+  /* FLUXOGRAMA */
+  .flux-scroll { overflow-x: auto; padding-bottom: 8px; }
+  .flux-cols { display: flex; gap: 14px; min-width: max-content; align-items: flex-start; }
+  .flux-col { width: 172px; }
+  .flux-col-label {
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    letter-spacing: 0.5px; text-transform: uppercase;
+    text-align: center; padding-bottom: 10px;
+    border-bottom: 1px solid var(--divider); margin-bottom: 10px;
+  }
+  .flux-node {
+    background: var(--surface); border: 1px solid var(--divider);
+    border-radius: 8px; padding: 11px 13px; margin-bottom: 8px;
+    box-shadow: var(--shadow-sm); transition: box-shadow 0.15s;
+  }
+  .flux-node:hover { box-shadow: var(--shadow-md); }
+  .flux-node.cursed    { border-color: rgba(52,199,89,0.35); background: #fcfffd; }
+  .flux-node.available { border-color: rgba(0,113,227,0.25); background: #fafcff; }
+  .fn-id { font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--text3); margin-bottom: 3px; }
+  .fn-name { font-size: 12.5px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 7px; }
+  .fn-badge { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 20px; display: inline-block; }
+  .fnb-cursed    { background: var(--green-bg); color: #1a8a36; }
+  .fnb-available { background: var(--accent-bg); color: #0057b3; }
+  .fnb-locked    { background: var(--surface2); color: var(--text3); border: 1px solid var(--divider); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(30,30,30,0.92); backdrop-filter: blur(10px);
+    color: #fff; font-size: 13px; font-weight: 500;
+    padding: 9px 20px; border-radius: 20px;
+    opacity: 0; transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none; white-space: nowrap; z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.err  { background: rgba(200,30,20,0.92); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <div class="window-dots">
+    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+  </div>
+  <span class="app-title">Fluxograma Universitário</span>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="switchTab('cadastro',this)">Disciplinas</button>
+    <button class="tab" onclick="switchTab('fluxo',this)">Fluxograma</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- PANEL 1 -->
+  <div class="panel active" id="panel-cadastro">
+    <div class="page-header">
+      <div class="page-title">Disciplinas</div>
+      <div class="page-sub">Cadastre as matérias do seu curso e seus pré-requisitos.</div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="form-body">
+        <div class="form-row">
+          <div class="field">
+            <label>ID da disciplina</label>
+            <input id="f-id" type="text" placeholder="ex: calc1">
+          </div>
+          <div class="field">
+            <label>Semestre</label>
+            <input id="f-sem" type="number" placeholder="1" min="1" max="12">
+          </div>
+        </div>
+        <div class="form-row one">
+          <div class="field">
+            <label>Nome</label>
+            <input id="f-name" type="text" placeholder="ex: Cálculo I">
+          </div>
+        </div>
+        <div class="form-row one">
+          <div class="field">
+            <label>Pré-requisitos — pressione Enter para adicionar</label>
+            <div class="tags-wrap" id="reqs-wrap" onclick="document.getElementById('reqs-input').focus()">
+              <input id="reqs-input" type="text" placeholder="ID da disciplina...">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <button class="btn btn-blue" onclick="addCourse()">Adicionar disciplina</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-header" style="grid-template-columns: 100px 1fr 70px 160px 80px">
+        <span>ID</span><span>Nome</span><span>Semestre</span><span>Pré-requisitos</span><span></span>
+      </div>
+      <div id="course-rows"><div class="empty">Nenhuma disciplina cadastrada ainda.</div></div>
+    </div>
+  </div>
+
+  <!-- PANEL 2 -->
+  <div class="panel" id="panel-fluxo">
+    <div class="page-header">
+      <div class="page-title">Fluxograma</div>
+      <div class="page-sub">Disciplinas organizadas por semestre.</div>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Cursada</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Disponível agora</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--divider)"></div>Bloqueada</div>
+    </div>
+    <div class="flux-scroll">
+      <div class="flux-cols" id="flux-cols">
+        <div class="empty">Nenhuma disciplina cadastrada ainda.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let reqs = [], allCourses = [];
+  // per-row edit state: { id, reqs[] }
+  let editState = {};
+
+  // ── tabs
+  function switchTab(name, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    btn.classList.add('active');
+    loadCourses();
+  }
+
+  // ── toast
+  function toast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type === 'err' ? ' err' : '');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  // ── add-form tags input
+  const ri = document.getElementById('reqs-input');
+  ri.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const v = ri.value.trim().toLowerCase();
+      if (v && !reqs.includes(v)) { reqs.push(v); renderTags(); }
+      ri.value = '';
+    }
+    if (e.key === 'Backspace' && !ri.value && reqs.length) { reqs.pop(); renderTags(); }
+  });
+  function renderTags() {
+    document.querySelectorAll('#reqs-wrap .tag').forEach(t => t.remove());
+    const wrap = document.getElementById('reqs-wrap');
+    reqs.forEach((r, i) => {
+      const t = document.createElement('div');
+      t.className = 'tag';
+      t.innerHTML = `${r}<span class="x" onclick="removeReq(${i})">×</span>`;
+      wrap.insertBefore(t, ri);
+    });
+  }
+  function removeReq(i) { reqs.splice(i, 1); renderTags(); }
+
+  // ── API
+  async function loadCourses() {
+    const r = await fetch('/api/courses');
+    allCourses = await r.json();
+    renderTable();
+    renderFlux();
+  }
+
+  async function addCourse() {
+    const id = document.getElementById('f-id').value.trim();
+    const name = document.getElementById('f-name').value.trim();
+    const semester = parseInt(document.getElementById('f-sem').value) || 1;
+    if (!id || !name) { toast('Preencha o ID e o nome.', 'err'); return; }
+    const r = await fetch('/api/courses', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({id, name, semester, requirements: reqs})
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error, 'err'); return; }
+    ['f-id','f-name','f-sem'].forEach(fid => document.getElementById(fid).value = '');
+    reqs = []; renderTags();
+    toast(`"${name}" adicionada.`);
+    loadCourses();
+  }
+
+  async function deleteCourse(id) {
+    await fetch(`/api/courses/${id}`, {method:'DELETE'});
+    toast('Disciplina removida.');
+    loadCourses();
+  }
+
+  async function toggleHistory(id) {
+    const c = allCourses.find(x => x.id === id);
+    if (!c) return;
+    if (c.cursed) {
+      await fetch(`/api/history/${id}`, {method:'DELETE'});
+      toast(`Desmarcada: ${c.name}`);
+    } else if (c.available) {
+      await fetch('/api/history', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({id})
+      });
+      toast(`Cursada: ${c.name}`);
+    } else {
+      toast('Pré-requisitos não cumpridos.', 'err'); return;
+    }
+    loadCourses();
+  }
+
+  // ── inline edit helpers
+  function startEdit(id) {
+    const c = allCourses.find(x => x.id === id);
+    editState[id] = [...(c.requirements || [])];
+    renderTable();
+    // focus name input after render
+    const inp = document.getElementById(`edit-name-${id}`);
+    if (inp) inp.focus();
+  }
+
+  function cancelEdit(id) {
+    delete editState[id];
+    renderTable();
+  }
+
+  async function saveEdit(id) {
+    const nameEl = document.getElementById(`edit-name-${id}`);
+    const semEl  = document.getElementById(`edit-sem-${id}`);
+    const name = nameEl.value.trim();
+    const semester = parseInt(semEl.value) || 1;
+    const requirements = editState[id] || [];
+    if (!name) { toast('O nome não pode ficar vazio.', 'err'); return; }
+
+    // delete and re-add (simplest approach given the API)
+    await fetch(`/api/courses/${id}`, {method:'DELETE'});
+    await fetch('/api/courses', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id, name, semester, requirements})
+    });
+    delete editState[id];
+    toast(`"${name}" atualizada.`);
+    loadCourses();
+  }
+
+  function addEditReq(id) {
+    const inp = document.getElementById(`edit-req-input-${id}`);
+    const v = inp.value.trim().toLowerCase();
+    if (v && !editState[id].includes(v)) {
+      editState[id].push(v);
+      renderTable();
+      // re-focus after re-render
+      setTimeout(() => {
+        const el = document.getElementById(`edit-req-input-${id}`);
+        if (el) el.focus();
+      }, 0);
+    } else {
+      inp.value = '';
+    }
+  }
+
+  function removeEditReq(id, i) {
+    editState[id].splice(i, 1);
+    renderTable();
+  }
+
+  // ── render: table
+  function renderTable() {
+    const el = document.getElementById('course-rows');
+    if (!allCourses.length) {
+      el.innerHTML = '<div class="empty">Nenhuma disciplina cadastrada ainda.</div>';
+      return;
+    }
+    el.innerHTML = allCourses.map(c => {
+      const isEditing = editState.hasOwnProperty(c.id);
+      if (isEditing) {
+        const ers = editState[c.id];
+        const editTags = ers.map((r,i) =>
+          `<span class="tag">${r}<span class="x" onclick="removeEditReq('${c.id}',${i})">×</span></span>`
+        ).join('');
+        return `
+          <div class="table-row editing" style="grid-template-columns:100px 1fr 70px 1fr 80px; align-items:start; padding-top:14px; padding-bottom:14px;">
+            <span class="mono">${c.id}</span>
+            <span><input class="row-edit-input" id="edit-name-${c.id}" value="${c.name}"></span>
+            <span><input class="row-edit-input" id="edit-sem-${c.id}" type="number" value="${c.semester}" min="1" max="12" style="width:56px"></span>
+            <span>
+              <div class="tags-wrap" style="min-height:32px" onclick="document.getElementById('edit-req-input-${c.id}').focus()">
+                ${editTags}
+                <input id="edit-req-input-${c.id}" type="text" placeholder="ID..." style="min-width:60px"
+                  onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addEditReq('${c.id}');}
+                             if(event.key==='Backspace'&&!this.value&&editState['${c.id}'].length){removeEditReq('${c.id}',editState['${c.id}'].length-1);}">
+              </div>
+            </span>
+            <span class="row-actions">
+              <button class="btn-save" onclick="saveEdit('${c.id}')">Salvar</button>
+              <button class="btn-cancel" onclick="cancelEdit('${c.id}')">✕</button>
+            </span>
+          </div>`;
+      }
+      return `
+        <div class="table-row" style="grid-template-columns:100px 1fr 70px 160px 80px">
+          <span class="mono">${c.id}</span>
+          <span>${c.name}</span>
+          <span><span class="sem-pill">${c.semester}º</span></span>
+          <span class="req-list">${c.requirements.length ? c.requirements.map(r=>`<span class="req-chip">${r}</span>`).join('') : '<span style="color:var(--text3)">—</span>'}</span>
+          <span class="actions-normal">
+            <button class="btn-edit" onclick="startEdit('${c.id}')" title="Editar">✎</button>
+            <button class="btn btn-ghost" onclick="deleteCourse('${c.id}')" title="Remover">✕</button>
+          </span>
+        </div>`;
+    }).join('');
+  }
+
+  // ── render: fluxograma (clickable nodes)
+  function renderFlux() {
+    const el = document.getElementById('flux-cols');
+    if (!allCourses.length) { el.innerHTML = '<div class="empty">Nenhuma disciplina cadastrada ainda.</div>'; return; }
+    const sems = {};
+    allCourses.forEach(c => { (sems[c.semester] = sems[c.semester] || []).push(c); });
+    el.innerHTML = Object.keys(sems).sort((a,b)=>a-b).map(s => `
+      <div class="flux-col">
+        <div class="flux-col-label">${s}º semestre</div>
+        ${sems[s].map(c => {
+          const cls = c.cursed ? 'cursed' : c.available ? 'available' : 'locked';
+          const b   = c.cursed ? 'fnb-cursed' : c.available ? 'fnb-available' : 'fnb-locked';
+          const bt  = c.cursed ? '✓ cursada' : c.available ? 'disponível' : 'bloqueada';
+          const tip = c.requirements.length ? 'Requer: '+c.requirements.join(', ') : 'Sem pré-requisitos';
+          const cursor = (c.cursed || c.available) ? 'pointer' : 'default';
+          return `
+            <div class="flux-node ${cls}" title="${tip}" style="cursor:${cursor}" onclick="toggleHistory('${c.id}')">
+              <div class="fn-id">${c.id}</div>
+              <div class="fn-name">${c.name}</div>
+              <span class="fn-badge ${b}">${bt}</span>
+            </div>`;
+        }).join('')}
+      </div>`).join('');
+  }
+
+  loadCourses();
+</script>
+</body>
+</html>
