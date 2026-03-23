@@ -1,4 +1,4 @@
-# Fluxograma Universitário
+# Fluxograma Universitário com SWI-Prolog
 
 Sistema para visualização do fluxograma curricular de cursos universitários, com controle de pré-requisitos via Prolog. O usuário cadastra as disciplinas do seu curso, define as dependências entre elas e acompanha quais estão disponíveis conforme seu histórico acadêmico.
 
