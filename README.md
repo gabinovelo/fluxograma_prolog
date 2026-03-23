@@ -12,17 +12,17 @@ Sistema para visualização do fluxograma curricular de cursos universitários, 
 
 Clone o repositório e instale as dependências:
 
-\```
+```
 git clone https://github.com/gabinovelo/fluxograma_prolog
 cd fluxograma_prolog
 pip install -r requirements.txt
-\```
+```
 
 ## Como executar
 
-\```
+```
 python app.py
-\```
+```
 
 Acesse no navegador: http://localhost:5000
 
